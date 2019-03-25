@@ -1,35 +1,27 @@
 {
   "compilerOptions": {
-    "outDir": "build/dist",
-    "module": "esnext",
-    "target": "es2016",
-    "lib": ["es6", "dom"],
     "sourceMap": true,
-    "baseUrl": ".",
+    "noImplicitAny": true,
+    "noStrictGenericChecks": true,
+    "noImplicitUseStrict": true,
+    "module": "commonjs",
+    "skipLibCheck": true,
+    "target": "es5",
+    "lib": [
+      "es6",
+      "dom"
+    ],
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
-    "rootDirs": ["/src", "/test", "/mock","./typings"],
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": true,
-    "allowJs": true,
     "experimentalDecorators": true,
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "moduleResolution": "node",
+    "typeRoots": [
+      "node_modules/@types",
+      "@types"
+    ],
+    "outDir": "dist"
   },
-  "include": ["./src"],
   "exclude": [
-    "node_modules",
-    "build",
-    "scripts",
-    "acceptance-tests",
-    "webpack",
-    "jest",
-    "src/setupTests.ts",
-    "tslint:latest",
-    "tslint-config-prettier"
+    "./node_modules"
   ]
 }
