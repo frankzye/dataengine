@@ -3,7 +3,8 @@ const HappyPack = require('happypack');
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 module.exports = {
     entry: {
-        app: './src/Components/Pages/index.tsx'
+        sys: './src/system_component.ts',
+        app: './src/index.tsx'
     },
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".json", ".scss"]
