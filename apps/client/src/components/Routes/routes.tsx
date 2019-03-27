@@ -5,7 +5,7 @@ import {
     Switch
 } from 'react-router-dom';
 import {OverView} from "../Pages/OverView";
-import {DataComponentDiagram} from "../Pages/DataComponentDiagram";
+import DataComponentDiagram from "../Pages/DataComponentDiagram";
 import {LayoutComponent} from "../Pages/LayoutComponent";
 import {InsightDiagram} from "../Pages/InsightDiagram";
 

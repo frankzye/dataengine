@@ -7,9 +7,14 @@ interface CardsProducerToolbarProps {
     dataState?: DataComponentState
 }
 
+const styles = {
+    padding: "5px",
+    borderBottom: "1px solid #ccc"
+};
+
 export class CardsProducerToolbar extends React.PureComponent<CardsProducerToolbarProps, any> {
     render() {
-        return <div>
+        return <div style={styles}>
             <Button icon={"save"} title={"Save"}/>
         </div>;
     }

@@ -1,11 +1,15 @@
 /**
  * register service lines.
  */
-export class ServiceBus {
-    components: any[] = [];
+import {CardInfo} from "./CardInfo";
+import {CardCollection} from "./CardCollection";
 
-    register(c: any) {
-        this.components.push(c);
+export class ServiceBus {
+    cardCollection: CardCollection = new CardCollection();
+
+    register(c: CardInfo) {
+        this.cardCollection.types.add(c.type);
+        this.cardCollection.cards.push(c);
     }
 
     static getInstance() {
