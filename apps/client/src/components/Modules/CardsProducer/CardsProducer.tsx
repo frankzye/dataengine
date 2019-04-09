@@ -1,18 +1,27 @@
 import * as React from 'react';
-import {DiagramComponent, SnapConstraints, SnapSettingsModel, NodeModel, NodeConstraints} from "@syncfusion/ej2-react-diagrams";
+import {
+    ConnectorModel,
+    DiagramComponent,
+    NodeModel,
+    SnapConstraints,
+    SnapSettingsModel
+} from "@syncfusion/ej2-react-diagrams";
 import {DropTarget} from "react-dnd";
 import ItemTypes from "../../Entities/ItemTypes";
 import {ConnectDropTarget, DropTargetConnector, DropTargetMonitor} from "react-dnd/lib/esm";
 import {connect} from "react-redux";
 import {DataComponentState} from "../../Entities/DataComponentState";
-import {CardConnector, CardInstance} from "../../Entities/CardInfo";
+import {CardNode} from "../../Entities/CardInfo";
+import * as ReactDOM from "react-dom";
+import {CardPanel} from "../CardPanel/CardPanel";
 
 export interface CardsProducerProps {
     canDrop: boolean,
     isOver: boolean,
     connectDropTarget: ConnectDropTarget,
-    nodes: CardInstance[],
-    connectors: CardConnector[]
+    nodes: NodeModel[],
+    path: string;
+    connectors: ConnectorModel[]
 }
 
 const styles: React.CSSProperties = {
@@ -28,10 +37,6 @@ class CardsProducer extends React.PureComponent<CardsProducerProps, any> {
         constraints: SnapConstraints.None
     };
 
-    static nodeDefaultSettings(node: NodeModel){
-        //TODO: set node
-    }
-
     render() {
         const {connectDropTarget, canDrop, isOver, connectors, nodes} = this.props;
         const isActive = canDrop && isOver;
@@ -42,9 +47,26 @@ class CardsProducer extends React.PureComponent<CardsProducerProps, any> {
         return <div ref={connectDropTarget} style={{...styles, backgroundColor}}>
             <DiagramComponent id="diagram" ref={diagram => (this.diagramInstance = diagram)} width={"100%"}
                               height={"100%"} snapSettings={this.snapSettings} nodes={nodes}
-                              getNodeDefaults={CardsProducer.nodeDefaultSettings}
+                              created={this.onCreated.bind(this)}
                               connectors={connectors}/>
         </div>;
+    }
+
+    append(node: NodeModel) {
+        this.diagramInstance.add(node);
+        this.renderNode(node);
+    }
+
+    renderNode(node: NodeModel) {
+        const cardNode = node.data as CardNode;
+        ReactDOM.render(<CardPanel node={cardNode} id={node.id}
+                                   path={this.props.path}/>, document.querySelector(`[data-id='${node.id}']`));
+    }
+
+    onCreated() {
+        for (const node of this.diagramInstance.nodes) {
+            this.renderNode(node);
+        }
     }
 }
 
@@ -54,7 +76,9 @@ const target = DropTarget(
         drop: (props, monitor, component) => {
             return {
                 offset: monitor.getSourceClientOffset(),
-                diagram: component.diagramInstance
+                append: (node: NodeModel) => {
+                    component.append(node);
+                }
             };
         }
     },
@@ -66,7 +90,9 @@ const target = DropTarget(
 )(CardsProducer);
 
 const mapStateToProps = (state: DataComponentState) => ({
-    connectors: state.cardConnectors,
-    nodes: state.cardInstances
+    connectors: state.connectors,
+    nodes: state.nodes,
+    path: state.path
 });
 export default connect(mapStateToProps)(target);
+

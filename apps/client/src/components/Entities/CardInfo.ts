@@ -1,6 +1,5 @@
-import {ConnectorModel} from "@syncfusion/ej2-diagrams";
-import {NodeModel} from "@syncfusion/ej2-react-diagrams";
 import {ReactElement} from "react";
+import {NodeModel} from "@syncfusion/ej2-diagrams";
 // @ts-ignore
 const uuid = require('uuid/v1');
 
@@ -10,40 +9,27 @@ export interface CardInfo {
     type: string;
     defaultOption?: any;
     icon?: () => ReactElement;
-    render: () => ReactElement;
-    renderEditor: () => ReactElement;
+    render: (node: CardNode) => ReactElement;
+    renderEditor: (node: CardNode) => ReactElement;
 }
 
-export interface CardConnector extends ConnectorModel {
-    direction: "in" | "out";
-    from: CardInstance;
-    to: CardInstance;
-}
-
-export class CardInstance implements NodeModel {
-    id: string;
+export class CardNode {
     name: string;
-    offsetX: number;
-    offsetY: number;
-    width: number;
-    height: number;
-    shape?: any;
-    annotations?: any;
-    connectors?: CardConnector[];
-    state: any;
-    cardInfo: CardInfo;
-
-    static Create(cardInfo: CardInfo, option: any) {
-        const id = uuid();
-        return Object.assign(new CardInstance(), {
-            id,
-            name: "test",
-            width: 240,
-            height: 120,
-            cardInfo,
-            ...option,
-            ...cardInfo.defaultOption,
-            shape: {type: "HTML", content: `<div data-id='${id}' class="cardInstanceWrapper"/>`},
-        });
-    }
+    cardInfoName: string;
+    data?: any;
 }
+
+export const createDiagramNode = (cardInfo: CardInfo, option: any): NodeModel => {
+    const id = "node" + uuid().replace(/-/g, "");
+    return {
+        id,
+        width: 240,
+        height: 120,
+        data: {
+            name: "test",
+            cardInfoName: cardInfo.name,
+        },
+        ...option,
+        shape: {type: "HTML", content: `<div data-id='${id}' class="cardInstanceWrapper"/>`},
+    };
+};

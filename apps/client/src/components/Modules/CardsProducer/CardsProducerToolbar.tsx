@@ -1,10 +1,13 @@
 import * as React from 'react';
-import {Button} from "antd";
+import {Button, Icon} from "antd";
 import {connect} from "react-redux";
 import {DataComponentState} from "../../Entities/DataComponentState";
+import {CardNode} from "../../Entities/CardInfo";
+import "./CardsProducerToolbar.less";
 
 interface CardsProducerToolbarProps {
     dataState?: DataComponentState
+    node?: CardNode;
 }
 
 const styles = {
@@ -12,10 +15,19 @@ const styles = {
     borderBottom: "1px solid #ccc"
 };
 
-export class CardsProducerToolbar extends React.PureComponent<CardsProducerToolbarProps, any> {
+class CardsProducerToolbar extends React.PureComponent<CardsProducerToolbarProps, any> {
     render() {
-        return <div style={styles}>
-            <Button icon={"save"} title={"Save"}/>
+        const {node, dataState} = this.props;
+        return <div style={styles} className={"cardsProducerToolbar"}>
+            <div className={"leftNav"}>
+                {
+                    node ? <a href={`#${dataState.path}`}><Icon type="left"/></a> :
+                        <a href={"#/"}><Icon type="home"/></a>
+                }
+            </div>
+            <div className={"rightNav"}>
+                <Button icon={"save"} title={"Save"}/>
+            </div>
         </div>;
     }
 }

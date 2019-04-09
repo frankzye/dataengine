@@ -16,8 +16,9 @@ export class Routes extends React.PureComponent<any, any> {
                 <Route exact key={"home"} path={"/"}>
                     <OverView/>
                 </Route>
-                <Route key={"data"} path={"/data"}>
-                    <DataComponentDiagram/>
+                <Route key={"diagrams"} path={"/diagrams/:usr/:name"} render={(props) => {
+                    return <DataComponentDiagram name={props.match.params.name} usr={props.match.params.usr}/>;
+                }}>
                 </Route>
                 <Route key={"layout"} path={"/layout"}>
                     <LayoutComponent/>

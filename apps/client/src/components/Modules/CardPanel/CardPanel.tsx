@@ -1,10 +1,13 @@
 import * as React from "react";
-import {CardInstance} from "../../Entities/CardInfo";
+import {CardNode} from "../../Entities/CardInfo";
 import {Dropdown, Icon, Menu} from "antd";
 import "./CardPanel.less";
+import {ServiceBus} from "../../Entities/ServiceBus";
 
 export interface CardPanelProps {
-    cardInstance: CardInstance;
+    id: string;
+    node: CardNode;
+    path: string;
 }
 
 export interface CardPanelStates {
@@ -19,11 +22,11 @@ export class CardPanel extends React.Component<CardPanelProps, CardPanelStates> 
 
     render() {
         const {menuVisible} = this.state;
-        const {cardInstance} = this.props;
+        const {node, path, id} = this.props;
         const menu = (
             <Menu>
-                <Menu.Item key="1"><a href={`#/data/${cardInstance.id}`}>View</a></Menu.Item>
-                <Menu.Item key="2"><a href={`#/data/${cardInstance.id}`}>Edit</a></Menu.Item>
+                <Menu.Item key="1"><a href={`#${path}/${id}`}>View</a></Menu.Item>
+                <Menu.Item key="2"><a href={`#${path}/${id}`}>Edit</a></Menu.Item>
             </Menu>
         );
         return <div className={"cardInstance"}>
@@ -31,10 +34,10 @@ export class CardPanel extends React.Component<CardPanelProps, CardPanelStates> 
                 this.setState({menuVisible: !menuVisible});
             }}>
                 <Dropdown trigger={['click']} overlay={menu} visible={menuVisible}>
-                    <a>{cardInstance.name}<Icon type={"caret-down"}/></a>
+                    <a>{node.name}<Icon type={"caret-down"}/></a>
                 </Dropdown>
             </div>
-            {cardInstance.cardInfo.render()}
+            {ServiceBus.getInstance().getCardInfo(node.cardInfoName).render(node)}
         </div>;
     }
 }

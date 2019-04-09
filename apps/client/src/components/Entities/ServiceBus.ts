@@ -15,4 +15,8 @@ export class ServiceBus {
     static getInstance() {
         return (window as any).SerivceBus as ServiceBus;
     }
+
+    getCardInfo(name: string) {
+        return this.cardCollection.cards.find(c => c.name === name);
+    }
 }

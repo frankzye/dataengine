@@ -1,18 +1,37 @@
 import * as React from 'react';
-import {Dropdown, Icon, Layout, Menu, Tabs} from "antd";
-import {SmallHeader} from "../Modules/SmallHeader/SmallHeader";
+import {Dropdown, Icon, Layout, List, Menu, Tabs} from "antd";
+import {DiagramInfo} from "../Entities/DiagramInfo";
 
 const TabPane = Tabs.TabPane;
 
-export class OverView extends React.PureComponent<any, any> {
+interface OverViewProps {
+}
+
+interface OverViewStates {
+    diagrams?: DiagramInfo[];
+}
+
+export class OverView extends React.PureComponent<OverViewProps, OverViewStates> {
+    constructor(props: OverViewProps) {
+        super(props);
+        this.state = {diagrams: []};
+    }
+
+    async componentWillMount() {
+        const diagrams = await (await fetch("/api/1.0/diagrams/frank")).json();
+        this.setState({diagrams})
+    }
+
     render() {
+        const {diagrams} = this.state;
         return <Layout>
-            <SmallHeader/>
             <Layout>
                 <Tabs defaultActiveKey="1" tabBarExtraContent={OverView.getAddControls()}>
-                    <TabPane tab="数据组件" key="1">Content of Tab Pane 1</TabPane>
-                    <TabPane tab="布局" key="2">Content of Tab Pane 2</TabPane>
-                    <TabPane tab="视图" key="3">Content of Tab Pane 3</TabPane>
+                    <TabPane tab="数据组件" key="1">
+                        <List dataSource={diagrams} renderItem={(d: DiagramInfo) =>
+                            <a href={`#/diagrams/frank/${d.name}`}><List.Item>{d.name}</List.Item></a>
+                        }/>
+                    </TabPane>
                 </Tabs>
             </Layout>
         </Layout>;
@@ -22,9 +41,6 @@ export class OverView extends React.PureComponent<any, any> {
         const menu = (
             <Menu>
                 <Menu.Item key="0"><a href="#/data">创建组件</a></Menu.Item>
-                <Menu.Item key="1"><a href="#/layout">创建布局</a></Menu.Item>
-                <Menu.Divider/>
-                <Menu.Item key="3"><a href="#/insight">创建视图</a></Menu.Item>
             </Menu>
         );
         return <Dropdown overlay={menu} trigger={['click']}><Icon type={"plus"}/></Dropdown>

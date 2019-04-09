@@ -7,12 +7,12 @@ ServiceBus.getInstance().register({
     name: "PostgreSQL连接",
     type: "连接器",
     render: () => (<PostgreSQLConnector/>),
-    renderEditor: () => (<PostgreSQLConnectorEditor/>)
+    renderEditor: (node) => (<PostgreSQLConnectorEditor node={node}/>)
 });
 
 ServiceBus.getInstance().register({
     name: "SQL Server连接",
     type: "连接器",
     render: () => (<PostgreSQLConnector/>),
-    renderEditor: () => (<PostgreSQLConnectorEditor/>)
+    renderEditor: (node) => (<PostgreSQLConnectorEditor node={node}/>)
 });

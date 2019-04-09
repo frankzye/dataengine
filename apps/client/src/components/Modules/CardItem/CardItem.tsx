@@ -1,23 +1,23 @@
 import * as React from "react";
 import {Dispatch} from "react";
-import * as ReactDOM from "react-dom";
-import {CardInfo, CardInstance} from "../../Entities/CardInfo";
+import {CardInfo, CardNode, createDiagramNode} from "../../Entities/CardInfo";
 import {Card} from "antd";
 import {ConnectDragSource, DragSource, DragSourceConnector, DragSourceMonitor} from "react-dnd";
 import ItemTypes from "../../Entities/ItemTypes";
-import {ACTION_TYPE_ADD_NODE} from "../../Entities/DataComponentState";
+import {ACTION_TYPE_ADD_NODE, DataComponentState} from "../../Entities/DataComponentState";
 import {connect} from "react-redux";
-import {CardPanel} from "../CardPanel/CardPanel";
+import {NodeModel} from "@syncfusion/ej2-diagrams";
 
 const styles = {
     margin: "5px"
 };
 
-interface CardItemProps {
+export interface CardItemProps {
+    path?: string;
     isDragging: boolean;
     connectDragSource: ConnectDragSource,
     cardInfo: CardInfo;
-    addNode?: (instance: CardInstance) => void;
+    addNode?: (instance: NodeModel) => void;
 }
 
 class CardItem extends React.PureComponent<CardItemProps> {
@@ -40,13 +40,12 @@ const cardSource = {
         if (result) {
             const cardInfo = props.cardInfo;
             const sourceOffset = document.querySelector("#diagram").getBoundingClientRect();
-            const instance = CardInstance.Create(cardInfo, {
+            const node = createDiagramNode(cardInfo, {
                 offsetX: result.offset.x - sourceOffset.left,
                 offsetY: result.offset.y - sourceOffset.top,
             });
-            props.addNode(instance);
-            result.diagram.add(instance);
-            ReactDOM.render(<CardPanel cardInstance={instance}/>, document.querySelector(`[data-id='${instance.id}']`));
+            props.addNode(node);
+            result.append(node)
         }
     },
 };
@@ -61,9 +60,13 @@ function collect(connect: DragSourceConnector, monitor: DragSourceMonitor) {
     }
 }
 
+const mapStateToProps = (state: DataComponentState) => ({
+    path: state.path
+});
+
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
     return {
-        addNode: (instance: CardInstance) => dispatch({type: ACTION_TYPE_ADD_NODE, instance})
+        addNode: (node: NodeModel) => dispatch({type: ACTION_TYPE_ADD_NODE, node})
     }
 };
-export default connect(() => ({aa: "bb"}), mapDispatchToProps)(DragSource(ItemTypes.CardItem, cardSource, collect)(CardItem));
+export default connect(mapStateToProps, mapDispatchToProps)(DragSource(ItemTypes.CardItem, cardSource, collect)(CardItem));
